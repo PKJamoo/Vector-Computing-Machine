@@ -1,2 +1,3 @@
 # Vector-Computing-Machine
-Simple faux-emulator for computer architecture
+Simple emulator for faux computer architecture with support 
+for assembly vector drawing primitives.
