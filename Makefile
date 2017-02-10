@@ -1,7 +1,7 @@
 CC := gcc
 RM := rm
 C_FLAGS := -g -Wall -Wextra
-#LINKFLAGS := ...
+#LINKFLAGS :=
 
 .PHONY: $(TARGET)
 .PHONY: clean
@@ -16,7 +16,7 @@ INC_PATH := -I ./HEAD
 TARGET := VCM
 
 #Files to Compile
-OBJ1 := init.o gpu.o cpu.o mem.o
+OBJ1 := init.o gpu.o cpu.o mem.o shell.o
 
 OBJ := $(patsubst %,$(OBJ_PATH)%,$(OBJ1))
 

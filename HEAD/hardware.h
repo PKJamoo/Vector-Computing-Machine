@@ -4,6 +4,8 @@
 /* Programming Architecture Constants and Structs */
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #define TRUE 1
 #define FALSE 0
 /* Constants for the CPU */
@@ -14,6 +16,10 @@
 #define MEM_START 0x0F
 #define NUM_OPS 16
 
+
+// Typedefs
+typedef struct struct_cpu cpu;
+typedef struct struct_gpu gpu;
 
 enum OPCODES 
 {
@@ -104,7 +110,6 @@ enum FLAGS
 
 /* Structs for the CPU */
 
-typedef struct struct_cpu cpu;
 
 struct struct_cpu {
 	int running;
@@ -134,6 +139,7 @@ void call( cpu* cpu, int16_t destination );
 void ret( cpu* cpu );
 void push( cpu* cpu, int from_reg) ;
 void pop ( cpu* cpu, int to_reg  );
+void draw(cpu* cpu, gpu* gpu);
 
 /* Constants for the Memory and Mem Management */
 # define MEM_SIZE 65536
@@ -150,15 +156,23 @@ unsigned char mainmem[MEM_SIZE];
 /* Constants for the GPU */
 
 /* Structs for the GPU */
-typedef struct struct_gpu gpu;
-
 struct struct_gpu {
 
+	int16_t draw_table[3];
+	uint16_t video_mode;
 
 };
 
 
 /* Function Prototypes for the GPU */
-void draw(gpu* gpu, unsigned char op_code);
+void init_gpu(gpu* gpu);
+void draw_line();
+void draw_rect();
+void draw_circle();
+
+/* Global Variables */
+cpu* processor;
+gpu* graphics;
+
 
 #endif // HARDWARE_H_

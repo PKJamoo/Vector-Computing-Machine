@@ -317,3 +317,11 @@ void pop (cpu* cpu, int to_reg)
 
 
 }
+
+
+void draw (cpu* cpu, gpu* gpu)
+{
+
+
+	
+}
