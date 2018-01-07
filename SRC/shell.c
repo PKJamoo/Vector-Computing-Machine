@@ -1,8 +1,10 @@
 #include <shell.h>
 #include <hardware.h>
+#include <assembler.h>
 
-
+// global file pointer for opening files
 FILE* file;
+
 // shell helper function for opening files
 void run_file()
 {
@@ -13,19 +15,27 @@ void run_file()
 	}
 }
 
+// include path variable for shell command type.
 void load_file (char* file_name)
 {
+	// create String filepath
 	char* file_path = "TESTBIN/";
+
+	
 	char* full_path = malloc(strlen(file_path) + strlen(file_name) + 1);
 	strcpy(full_path, file_path);
 	strcat(full_path, file_name);
+	// open file
 	file = fopen(full_path, "rb");
+	// find file size
 	int file_size;
 	fseek(file, 0, SEEK_END);
 	file_size = ftell(file);
 	rewind(file);
-
+	// read file into mainmem
 	fread(mainmem, sizeof(unsigned char), file_size, file);
+	// close file and free path string
+	fclose(file);
 	free(full_path);
 }
 
@@ -33,6 +43,7 @@ void load_file (char* file_name)
 char* shell_read_line() 
 {
 	char *line = malloc(sizeof(char) * SHELL_BUFF_SIZE);
+	int buffer_size = SHELL_BUFF_SIZE;
 	int pos = 0;
 	char new_char;
 
@@ -53,28 +64,45 @@ char* shell_read_line()
 		}
 		pos++;
 
-	// deal with buffer size issues in the future maybe?
+		// re-allocate buffer
+		if (pos >= buffer_size) {
+	      buffer_size += SHELL_BUFF_SIZE;
+	      line = realloc(line, buffer_size);
+	      if (!line) {
+			perror("sh: memory allocation error.\n");
+	      	}
+	  	}
 	}
 }
 
 
 char** shell_split_line(char* line) 
 {
-	int position = 0;
+	int pos = 0;
+	int params_size = SHELL_PARAMS_SIZE;
 	char* token;
-	char** args = malloc(SHELL_BUFF_SIZE * sizeof(char*));
+	char** args = malloc(params_size * sizeof(char*));
 	// find first command
 	token = strtok(line, " ");
 
 	while (token != NULL){
 
-		args[position] = token;
-		position++;
+		args[pos] = token;
+		pos++;
+
+		// re-allocate buffer
+		if (pos >= params_size) {
+	      params_size += SHELL_PARAMS_SIZE;
+	      args = realloc(args, params_size);
+	      if (!args) {
+			perror("sh: memory allocation error.\n");
+	      	}
+	  	}
 
 		token = strtok(NULL, " ");
 
 	}
-		args[position] = NULL;
+		args[pos] = NULL;
 
 		return args;
 
@@ -86,7 +114,7 @@ int	    shell_execute_command(int argc, char** args)
 {
 		if (strcmp(args[0], "open") == 0){
 			if (argc != 2) {
-				printf("MUST INCLUDE FILENAME\n");
+				printf("MUST INCLUDE FILENAME TO RUN\n");
 				return 0;
 			}
 			load_file(args[1]);
@@ -94,6 +122,16 @@ int	    shell_execute_command(int argc, char** args)
 			return 0;
 
 		}
+
+		if (strcmp(args[0], "asm") == 0) {
+			if (argc != 2) {
+				printf("MUST INCLUDE FILENAME TO ASSEMBLE\n");
+				return 0;
+			}
+
+			// fill in later
+		}
+		printf("%s IS NOT A VALID COMMAND\n", args[0]);
 		return 0;
 }
 

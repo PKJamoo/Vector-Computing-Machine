@@ -196,6 +196,7 @@ void store( cpu* cpu, unsigned char op_code, int regA, int regB, int16_t valC)
 }
 void binop( cpu* cpu, unsigned char op_code, unsigned char regA, unsigned char regB)
 {
+	int16_t old_reg = cpu->regs[regB];
 	switch (op_code)
 	{
 		case ADD:
@@ -234,7 +235,7 @@ void binop( cpu* cpu, unsigned char op_code, unsigned char regA, unsigned char r
 			if (cpu->regs[regB] < 0)
 				cpu->flags[SIGNFLAG] = 1;
 
-			printf("OPERANDS %x = %x %x\n", cpu->regs[regB], cpu->regs[regB], cpu->regs[regA]);
+			printf("OPERANDS %x = %x %x\n", cpu->regs[regB], old_reg, cpu->regs[regA]);
 			cpu->ip = cpu->ip + 2;
 
 
