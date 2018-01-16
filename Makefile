@@ -16,7 +16,7 @@ INC_PATH := -I ./HEAD
 TARGET := VCM
 
 #Files to Compile
-OBJ1 := init.o gpu.o cpu.o mem.o shell.o
+OBJ1 := init.o gpu.o cpu.o mem.o shell.o assembler.o
 
 OBJ := $(patsubst %,$(OBJ_PATH)%,$(OBJ1))
 
