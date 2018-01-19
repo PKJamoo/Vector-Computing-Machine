@@ -16,7 +16,7 @@ void run_file()
 }
 
 // include path variable for shell command type.
-void load_file (char* file_name)
+inline void load_file (char* file_name)
 {
 	// create String filepath
 	char* file_path = "TESTBIN/";

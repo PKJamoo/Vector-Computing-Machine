@@ -2,7 +2,7 @@
 #include <assembler.h>
 
 
-FILE* assembler_open_file(char* file_name)
+inline FILE* assembler_open_file(char* file_name)
 {
 
 	FILE* file;
@@ -20,6 +20,23 @@ FILE* assembler_open_file(char* file_name)
 
 }
 
+// helper function to be used in the parsing stage
+//TBD
+label* find_labels(FILE* file)
+{
+	return NULL;
+}
+
+// helper function to be used in the optimization stage
+// tbd
+void replace_labels(ast* ast)
+{
+	
+
+}
+
+
+//--------------------
 
 // parse assembler code into AST
 void assembler_parse(FILE* file, ast* ast)
@@ -32,7 +49,15 @@ void assembler_parse(FILE* file, ast* ast)
 		return;
 	}
 
-	
+	// create AST for instructions
+	instr* instr = malloc(sizeof(instr));
+	while(file)
+	{
+
+	}
+
+	// find all labels in file
+	ast->labels = find_labels(file);
 
 
 	
@@ -63,8 +88,8 @@ void assembler(char* file_name)
 	assembler_optimize(&ast);
 
 
-	// free file pointer after use
-	free(file);
+	// close file after use
+	fclose(file);
 
 	// free AST after use
 

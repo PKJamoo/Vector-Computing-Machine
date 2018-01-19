@@ -7,6 +7,7 @@
 typedef struct struct_label	label;
 typedef struct struct_instr instr;
 typedef struct struct_ast ast;
+typedef struct struct_jump jmp_instr;
 
 struct struct_label {
 
@@ -17,10 +18,18 @@ struct struct_label {
 
 struct struct_instr {
 
-	int opcode;
-	int fncode;
-	int arg0;
-	int arg1;
+	unsigned char opcode;
+	unsigned char fncode;
+	unsigned char arg0;
+	unsigned char arg1;
+	void* next_instr;
+
+};
+
+struct struct_jmp {
+	unsigned char opcode;
+	unsigned char fncode;
+	char*	label;
 	void* next_instr;
 
 };
@@ -37,7 +46,7 @@ struct struct_ast {
 FILE* assembler_open_file(char* file_name);
 
 label* find_labels(FILE* file);
-void replace_labels(instr* instrs, label* labels);
+void replace_labels(ast* ast);
 
 
 
