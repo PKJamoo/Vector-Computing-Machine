@@ -6,6 +6,7 @@
 
 typedef struct struct_label	label;
 typedef struct struct_instr instr;
+typedef struct struct_ast ast;
 
 struct struct_label {
 
@@ -24,6 +25,11 @@ struct struct_instr {
 
 };
 
+struct struct_ast {
+	label* labels;
+	instr* instrs;
+};
+
 
 
 // Assembler Helpers
@@ -36,8 +42,9 @@ void replace_labels(instr* instrs, label* labels);
 
 
 // Functions for the Assembler
-void assembler_parse();
-void assembler_optimize();
+void assembler_parse(FILE* file, ast* ast);
+void assembler_optimize(ast* ast);
+void assembler(char* file_name);
 
 
 

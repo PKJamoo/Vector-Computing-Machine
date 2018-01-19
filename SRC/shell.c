@@ -128,8 +128,8 @@ int	    shell_execute_command(int argc, char** args)
 				printf("MUST INCLUDE FILENAME TO ASSEMBLE\n");
 				return 0;
 			}
+			assembler(args[1]);
 
-			// fill in later
 		}
 		printf("%s IS NOT A VALID COMMAND\n", args[0]);
 		return 0;
