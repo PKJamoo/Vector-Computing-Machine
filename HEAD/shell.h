@@ -2,7 +2,7 @@
 #define SHELL_H_
 
 // constants for use by the shell
-#define SHELL_BUFF_SIZE 1024
+#define SHELL_BUFF_SIZE 512
 #define SHELL_PARAMS_SIZE 10
 
 

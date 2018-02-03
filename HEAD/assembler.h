@@ -3,6 +3,9 @@
 
 /* Assembler Architecture Constants and Structs */
 
+#define ASSEMBLER_BUFF_SIZE 512
+#define ASSEMBLER_PARAMS_SIZE 10
+
 
 typedef struct struct_label	label;
 typedef struct struct_instr instr;
@@ -22,7 +25,7 @@ struct struct_instr {
 	unsigned char fncode;
 	unsigned char arg0;
 	unsigned char arg1;
-	void* next_instr;
+	void* next;
 
 };
 
@@ -47,6 +50,9 @@ FILE* assembler_open_file(char* file_name);
 
 label* find_labels(FILE* file);
 void replace_labels(ast* ast);
+
+char* 	assembler_read_line(FILE* file, int* end);
+char**	assembler_split_line(char* line);
 
 
 

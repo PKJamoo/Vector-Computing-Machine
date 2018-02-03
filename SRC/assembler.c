@@ -1,8 +1,9 @@
 #include <hardware.h>
 #include <assembler.h>
+#include <stdio.h>
 
 
-inline FILE* assembler_open_file(char* file_name)
+FILE* assembler_open_file(char* file_name)
 {
 
 	FILE* file;
@@ -20,6 +21,87 @@ inline FILE* assembler_open_file(char* file_name)
 
 }
 
+// read a single line from the file and process the results
+char* assembler_read_line(FILE* file, int* end) 
+{
+	int buffer_size = ASSEMBLER_BUFF_SIZE;
+	char* buffer = malloc(sizeof(char) * ASSEMBLER_BUFF_SIZE);
+	int pos = 0;
+	char new_char;
+
+		if(!buffer){
+		perror("asm: memory allocation error.\n");
+	}
+
+	while(1){
+		// read the next character
+		new_char = getc(file);
+
+		if (new_char == EOF || new_char == '\n' || new_char == '\r') {
+			if (new_char == EOF) {
+				*end = 1;
+			}
+			buffer[pos] = '\0';
+			return buffer;
+		}
+		else {
+			buffer[pos] = new_char;
+		}
+		pos++;
+
+		// re-allocate buffer
+		if (pos >= buffer_size) {
+	      buffer_size += ASSEMBLER_BUFF_SIZE;
+	      buffer = realloc(buffer, buffer_size);
+	      if (!buffer) {
+			perror("asm: memory allocation error.\n");
+	      	}
+	  	}
+	}
+}
+
+// split a single line of code from the file into its parts
+char** assembler_split_line(char* line) 
+{
+	int pos = 0;
+	int params_size = ASSEMBLER_PARAMS_SIZE;
+	char* token;
+	char** args = malloc(params_size * sizeof(char*));
+	// find first command
+	token = strtok(line, " ");
+
+	while (token != NULL){
+
+		args[pos] = token;
+		pos++;
+
+		// re-allocate buffer
+		if (pos >= params_size) {
+	      params_size += ASSEMBLER_PARAMS_SIZE;
+	      args = realloc(args, params_size);
+	      if (!args) {
+			perror("sh: memory allocation error.\n");
+	      	}
+	  	}
+
+		token = strtok(NULL, " ");
+
+	}
+		args[pos] = NULL;
+
+		free(line);
+
+		return args;
+}
+
+// parse a single line of code into an instr for the ast
+void	assembler_parse_instr(char** args, int argc, void* instr)
+{
+	// big switch statements based on type of instruction
+
+}
+
+
 // helper function to be used in the parsing stage
 //TBD
 label* find_labels(FILE* file)
@@ -28,10 +110,10 @@ label* find_labels(FILE* file)
 }
 
 // helper function to be used in the optimization stage
-// tbd
+// TBD
 void replace_labels(ast* ast)
 {
-	
+
 
 }
 
@@ -41,19 +123,25 @@ void replace_labels(ast* ast)
 // parse assembler code into AST
 void assembler_parse(FILE* file, ast* ast)
 {
-	// if file is empty
-	fseek(file, 0, SEEK_END);
-	if (ftell(file) == 0)
-	{
-		printf("FILE EMPTY\n");
-		return;
-	}
+	// get pointer to first instr in ast
+	instr* instr = ast->instrs;
 
-	// create AST for instructions
-	instr* instr = malloc(sizeof(instr));
-	while(file)
-	{
 
+	int end;
+	end = 0;
+	// check to see if file ended
+	while (~(end)){
+
+		char** args = assembler_split_line(	 // find separate pieces of assembler instr
+			assembler_read_line(file, &end)); // read a soingle line, determine if file is ended
+
+		int arg_count = 0;
+		while (args[arg_count]){
+			arg_count++;
+		}
+
+		assembler_parse_instr(args, arg_count, instr); // parse the arguments into an ast instr_node
+		instr = ast->instrs->next;
 	}
 
 	// find all labels in file
@@ -78,14 +166,14 @@ void assembler(char* file_name)
 {
 	FILE* file = assembler_open_file(file_name);
 
-	ast ast;
+	ast* ast = malloc(sizeof(ast));
 
 	// call parse function to create ast
-	assembler_parse(file, &ast);
+	assembler_parse(file, ast);
 
 
 	// optimize code
-	assembler_optimize(&ast);
+	assembler_optimize(ast);
 
 
 	// close file after use

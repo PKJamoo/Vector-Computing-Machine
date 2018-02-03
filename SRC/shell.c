@@ -114,7 +114,7 @@ int	    shell_execute_command(int argc, char** args)
 {
 		if (strcmp(args[0], "open") == 0){
 			if (argc != 2) {
-				printf("MUST INCLUDE FILENAME TO RUN\n");
+				printf("sh: must include name of file to run\n");
 				return 0;
 			}
 			load_file(args[1]);
@@ -123,15 +123,24 @@ int	    shell_execute_command(int argc, char** args)
 
 		}
 
-		if (strcmp(args[0], "asm") == 0) {
+		else if (strcmp(args[0], "asm") == 0) {
 			if (argc != 2) {
-				printf("MUST INCLUDE FILENAME TO ASSEMBLE\n");
+				printf("sh: must include name of file to assemble\n");
 				return 0;
 			}
 			assembler(args[1]);
 
 		}
-		printf("%s IS NOT A VALID COMMAND\n", args[0]);
+
+		else if ((strcmp(args[0], "quit") == 0 )
+					 || (strcmp(args[0], "q") == 0 )) {
+
+			return -1;
+		}
+
+		else {
+		printf("sh: %s is not a valid command\n", args[0]);
+		}
 		return 0;
 }
 
@@ -142,7 +151,7 @@ int 	shell()
 	char* line;
 	char** args;
 	while (status >= 0) {
-		printf(">");
+		printf("> ");
 		// read and parse shell commands
 		line = shell_read_line();
 		args = shell_split_line(line);
