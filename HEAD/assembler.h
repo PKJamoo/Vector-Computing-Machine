@@ -16,7 +16,7 @@ struct struct_label {
 
 	char* label;
 	int address;
-	void* next;
+	label * next;
 };
 
 struct struct_instr {
@@ -25,7 +25,8 @@ struct struct_instr {
 	unsigned char fncode;
 	unsigned char arg0;
 	unsigned char arg1;
-	void* next;
+	int address;
+	instr * next;
 
 };
 
@@ -33,13 +34,13 @@ struct struct_jmp {
 	unsigned char opcode;
 	unsigned char fncode;
 	char*	label;
-	void* next_instr;
+	instr * next_instr;
 
 };
 
 struct struct_ast {
-	label* labels;
-	instr* instrs;
+	label * labels;
+	instr * instrs;
 };
 
 
@@ -59,6 +60,7 @@ char**	assembler_split_line(char* line);
 // Functions for the Assembler
 void assembler_parse(FILE* file, ast* ast);
 void assembler_optimize(ast* ast);
+void assembler_create_bin(ast* ast);
 void assembler(char* file_name);
 
 

@@ -1,6 +1,6 @@
 #include <hardware.h>
 #include <assembler.h>
-#include <stdio.h>
+
 
 
 FILE* assembler_open_file(char* file_name)
@@ -24,6 +24,7 @@ FILE* assembler_open_file(char* file_name)
 // read a single line from the file and process the results
 char* assembler_read_line(FILE* file, int* end) 
 {
+	//printf("entered readline\n");
 	int buffer_size = ASSEMBLER_BUFF_SIZE;
 	char* buffer = malloc(sizeof(char) * ASSEMBLER_BUFF_SIZE);
 	int pos = 0;
@@ -42,6 +43,8 @@ char* assembler_read_line(FILE* file, int* end)
 				*end = 1;
 			}
 			buffer[pos] = '\0';
+			// test print statement
+			printf("asm code: %s\n", buffer);
 			return buffer;
 		}
 		else {
@@ -63,6 +66,8 @@ char* assembler_read_line(FILE* file, int* end)
 // split a single line of code from the file into its parts
 char** assembler_split_line(char* line) 
 {
+	//printf("entered splitline\n");
+	printf("line: %s\n", line);
 	int pos = 0;
 	int params_size = ASSEMBLER_PARAMS_SIZE;
 	char* token;
@@ -72,6 +77,7 @@ char** assembler_split_line(char* line)
 
 	while (token != NULL){
 
+		printf("token: %s\n", token);
 		args[pos] = token;
 		pos++;
 
@@ -79,25 +85,125 @@ char** assembler_split_line(char* line)
 		if (pos >= params_size) {
 	      params_size += ASSEMBLER_PARAMS_SIZE;
 	      args = realloc(args, params_size);
+	      //printf("am I reallocating?\n");
 	      if (!args) {
 			perror("sh: memory allocation error.\n");
 	      	}
 	  	}
-
 		token = strtok(NULL, " ");
 
 	}
 		args[pos] = NULL;
 
-		free(line);
 
+		// test prints
+		/*
+		printf("asm args:");
+		for (int i = 0; i < pos; i++){
+		printf(" %s", args[i]);
+		}
+		printf("\n");
+		*/
 		return args;
 }
 
 // parse a single line of code into an instr for the ast
-void	assembler_parse_instr(char** args, int argc, void* instr)
+void assembler_parse_instr(char** args, int argc, void* instr)
 {
-	// big switch statements based on type of instruction
+	// big if/else tree based on type of instruction
+	if (strcmp(args[0], "HALT") == 0){
+
+	}
+	else if (strcmp(args[0], "NOP") == 0){
+
+	}
+
+	else if (strcmp(args[0], "MOV") == 0){
+
+	}
+	else if (strcmp(args[0], "LOAD") == 0){
+
+	}
+	else if (strcmp(args[0], "STORE") == 0){
+
+	}
+
+	else if (strcmp(args[0], "ADD") == 0){
+
+	}
+	else if (strcmp(args[0], "SUB") == 0){
+
+	}
+	else if (strcmp(args[0], "MULT") == 0){
+
+	}
+
+	else if (strcmp(args[0], "DIV") == 0){
+
+	}
+	else if (strcmp(args[0], "MOD") == 0){
+
+	}
+	else if (strcmp(args[0], "AND") == 0){
+
+	}
+
+	else if (strcmp(args[0], "XOR") == 0){
+
+	}
+	else if (strcmp(args[0], "JMP") == 0){
+
+	}
+	else if (strcmp(args[0], "JGE") == 0){
+
+	}
+	else if (strcmp(args[0], "JGT") == 0){
+
+	}
+	else if (strcmp(args[0], "JEQ") == 0){
+
+	}
+	else if (strcmp(args[0], "JNE") == 0){
+
+	}
+	else if (strcmp(args[0], "JLT") == 0){
+
+	}
+	else if (strcmp(args[0], "JLE") == 0){
+
+	}
+	else if (strcmp(args[0], "CALL") == 0){
+
+	}
+	else if (strcmp(args[0], "RET") == 0){
+
+	}
+	else if (strcmp(args[0], "PUSH") == 0){
+
+	}
+	else if (strcmp(args[0], "POP") == 0){
+
+	}
+	else if (strcmp(args[0], "JMP") == 0){
+
+	}
+	else if (strcmp(args[0], "DRAWR") == 0){
+
+	}
+	else if (strcmp(args[0], "DRAWC") == 0){
+
+	}
+	else if (strcmp(args[0], "DRAWL") == 0){
+
+	}
+	else if (strcmp(args[0], "PRINT") == 0){
+
+	}
+	else {
+
+	}
+
+
 
 }
 
@@ -124,24 +230,31 @@ void replace_labels(ast* ast)
 void assembler_parse(FILE* file, ast* ast)
 {
 	// get pointer to first instr in ast
-	instr* instr = ast->instrs;
+	//printf("getting instrs\n");
+	instr* current_instr = ast->instrs;
+	//printf("got instrs\n");
 
 
 	int end;
 	end = 0;
 	// check to see if file ended
-	while (~(end)){
-
+	while (!end){
 		char** args = assembler_split_line(	 // find separate pieces of assembler instr
 			assembler_read_line(file, &end)); // read a soingle line, determine if file is ended
 
+
+		//printf("read line, split line\n");
 		int arg_count = 0;
 		while (args[arg_count]){
+			//printf("args %d\n", arg_count);
 			arg_count++;
 		}
 
-		assembler_parse_instr(args, arg_count, instr); // parse the arguments into an ast instr_node
-		instr = ast->instrs->next;
+		assembler_parse_instr(args, arg_count, current_instr); // parse the arguments into an ast instr_node
+		if (!end){
+			ast->instrs->next = malloc(sizeof(instr));
+			current_instr = ast->instrs->next;
+		}
 	}
 
 	// find all labels in file
@@ -159,25 +272,48 @@ void assembler_optimize(ast* ast)
 }
 
 
+void assembler_create_bin(ast* ast)
+{
+
+}
 
 
 // entry point for users to access the assembler
 void assembler(char* file_name)
 {
+	// open .pasm file for parsing
 	FILE* file = assembler_open_file(file_name);
+	printf("opened file\n");
 
+	// allocate memory for instruction ast
 	ast* ast = malloc(sizeof(ast));
+	if (!ast) {
+		perror("asm: memory allocation error.\n");
+	}
+	ast->instrs = malloc(sizeof(instr));
+	if (!ast->instrs) {
+		perror("asm: memory allocation error.\n");
+	}
+	ast->labels = malloc(sizeof(label));
+	if (!ast->instrs) {
+		perror("asm: memory allocation error.\n");
+	}
 
 	// call parse function to create ast
 	assembler_parse(file, ast);
+	printf("parsed\n");
 
 
 	// optimize code
 	assembler_optimize(ast);
 
 
+	// create binary file
+	assembler_create_bin(ast);
+
 	// close file after use
 	fclose(file);
+
 
 	// free AST after use
 
