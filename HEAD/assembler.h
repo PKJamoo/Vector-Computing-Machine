@@ -21,18 +21,18 @@ struct struct_label {
 
 struct struct_instr {
 
-	unsigned char opcode;
-	unsigned char fncode;
-	unsigned char arg0;
-	unsigned char arg1;
-	int address;
+	char opcode[5];
+	char fncode[3];
+	char arg0[16];
+	char arg1[16];
+	uint16_t address;
 	instr * next;
 
 };
 
 struct struct_jmp {
-	unsigned char opcode;
-	unsigned char fncode;
+	char opcode[5];
+	char fncode[3];
 	char*	label;
 	instr * next_instr;
 

@@ -108,99 +108,102 @@ char** assembler_split_line(char* line)
 }
 
 // parse a single line of code into an instr for the ast
-void assembler_parse_instr(char** args, int argc, void* instr)
+void assembler_parse_instr(char** args, int argc, instr* instr)
 {
 	// big if/else tree based on type of instruction
 	if (strcmp(args[0], "HALT") == 0){
+		strcpy(instr->opcode, "HALT");
 
 	}
 	else if (strcmp(args[0], "NOP") == 0){
-
+		strcpy(instr->opcode, "NOP");
 	}
 
 	else if (strcmp(args[0], "MOV") == 0){
-
+		strcpy(instr->opcode, "MOV");
+		strcpy(instr->arg0, args[1]);
+		strcpy(instr->arg1, args[2]);
 	}
 	else if (strcmp(args[0], "LOAD") == 0){
-
+		strcpy(instr->opcode, "LOAD");
+		strcpy(instr->fncode, "");
+		strcpy(instr->arg0, args[1]);
+		strcpy(instr->arg1, args[2]);
 	}
 	else if (strcmp(args[0], "STORE") == 0){
-
+		strcpy(instr->opcode, "STORE");
 	}
 
 	else if (strcmp(args[0], "ADD") == 0){
-
+		strcpy(instr->opcode, "BIN");
 	}
 	else if (strcmp(args[0], "SUB") == 0){
-
+		strcpy(instr->opcode, "BIN");
 	}
 	else if (strcmp(args[0], "MULT") == 0){
-
+		strcpy(instr->opcode, "BIN");
 	}
 
 	else if (strcmp(args[0], "DIV") == 0){
-
+		strcpy(instr->opcode, "BIN");
 	}
 	else if (strcmp(args[0], "MOD") == 0){
-
+		strcpy(instr->opcode, "BIN");
 	}
 	else if (strcmp(args[0], "AND") == 0){
-
+		strcpy(instr->opcode, "BIN");
 	}
 
 	else if (strcmp(args[0], "XOR") == 0){
-
+		strcpy(instr->opcode, "XOR");
 	}
 	else if (strcmp(args[0], "JMP") == 0){
-
+		strcpy(instr->opcode, "JMP");
 	}
 	else if (strcmp(args[0], "JGE") == 0){
 
 	}
 	else if (strcmp(args[0], "JGT") == 0){
-
+		strcpy(instr->opcode, "JMP");
 	}
 	else if (strcmp(args[0], "JEQ") == 0){
-
+		strcpy(instr->opcode, "JMP");
 	}
 	else if (strcmp(args[0], "JNE") == 0){
-
+		strcpy(instr->opcode, "JMP");
 	}
 	else if (strcmp(args[0], "JLT") == 0){
-
+		strcpy(instr->opcode, "JMP");
 	}
 	else if (strcmp(args[0], "JLE") == 0){
-
+		strcpy(instr->opcode, "JMP");
 	}
 	else if (strcmp(args[0], "CALL") == 0){
-
+		strcpy(instr->opcode, "CALL");
 	}
 	else if (strcmp(args[0], "RET") == 0){
-
+		strcpy(instr->opcode, "RET");
 	}
 	else if (strcmp(args[0], "PUSH") == 0){
-
+		strcpy(instr->opcode, "PUSH");
 	}
 	else if (strcmp(args[0], "POP") == 0){
-
-	}
-	else if (strcmp(args[0], "JMP") == 0){
-
+		strcpy(instr->opcode, "POP");
 	}
 	else if (strcmp(args[0], "DRAWR") == 0){
-
+		strcpy(instr->opcode, "DRAW");
 	}
 	else if (strcmp(args[0], "DRAWC") == 0){
-
+		strcpy(instr->opcode, "DRAW");
 	}
 	else if (strcmp(args[0], "DRAWL") == 0){
-
+		strcpy(instr->opcode, "DRAW");
 	}
 	else if (strcmp(args[0], "PRINT") == 0){
-
+		strcpy(instr->opcode, "PRINT");
 	}
 	else {
-
+		printf("Illegal Command Error: %s is not a valid operation", args[0]);
 	}
 
 
@@ -240,18 +243,20 @@ void assembler_parse(FILE* file, ast* ast)
 	// check to see if file ended
 	while (!end){
 		char** args = assembler_split_line(	 // find separate pieces of assembler instr
-			assembler_read_line(file, &end)); // read a soingle line, determine if file is ended
+			assembler_read_line(file, &end)); // read a single line, determine if file is ended
+			if (end) break;					// check if we're on the last line and leave the loop
 
 
 		//printf("read line, split line\n");
 		int arg_count = 0;
 		while (args[arg_count]){
-			//printf("args %d\n", arg_count);
+			//printf("args %s\n", args[arg_count]);
 			arg_count++;
 		}
-
+		printf("parsing instr\n");
 		assembler_parse_instr(args, arg_count, current_instr); // parse the arguments into an ast instr_node
 		if (!end){
+			printf("hello: %s\n", current_instr->opcode);
 			ast->instrs->next = malloc(sizeof(instr));
 			current_instr = ast->instrs->next;
 		}
@@ -313,7 +318,6 @@ void assembler(char* file_name)
 
 	// close file after use
 	fclose(file);
-
 
 	// free AST after use
 

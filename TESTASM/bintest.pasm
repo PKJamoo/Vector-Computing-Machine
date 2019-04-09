@@ -4,3 +4,4 @@ ADD A, B
 SUB A, B
 MOV A, C
 MOV B, D
+HALT
