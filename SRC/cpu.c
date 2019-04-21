@@ -148,7 +148,7 @@ void move( cpu* cpu, unsigned char op_code, unsigned char regA, unsigned char re
 
 
 }
-void load( cpu* cpu,  unsigned char op_code, int regA, int regB, int16_t valC)
+void load( cpu* cpu, unsigned char op_code, int regA, int regB, int16_t valC)
 {
 
 	switch(op_code)

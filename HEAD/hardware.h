@@ -12,7 +12,7 @@
 
 #define READ_SIZE 2		// in bytes
 #define NUM_REGS 16	// number of registers for the system
-#define NUM_FLAGS 3	// number of (condition codes) flags for the system
+#define NUM_FLAGS 4	// number of (condition codes) flags for the system
 #define MEM_START 0x0F
 #define NUM_OPS 16
 
@@ -105,7 +105,8 @@ enum FLAGS
 {
 	ZEROFLAG,
 	SIGNFLAG,
-	INTERRUPTFLAG
+	INTERRUPTFLAG,
+	CARRYFLAG
 };
 
 /* Structs for the CPU */

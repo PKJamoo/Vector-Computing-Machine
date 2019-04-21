@@ -129,7 +129,6 @@ int	    shell_execute_command(int argc, char** args)
 				return 0;
 			}
 			assembler(args[1]);
-
 		}
 
 		else if ((strcmp(args[0], "quit") == 0 )

@@ -67,7 +67,7 @@ char* assembler_read_line(FILE* file, int* end)
 char** assembler_split_line(char* line) 
 {
 	//printf("entered splitline\n");
-	printf("line: %s\n", line);
+	//printf("line: %s\n", line);
 	int pos = 0;
 	int params_size = ASSEMBLER_PARAMS_SIZE;
 	char* token;
@@ -77,7 +77,7 @@ char** assembler_split_line(char* line)
 
 	while (token != NULL){
 
-		printf("token: %s\n", token);
+		//printf("token: %s\n", token);
 		args[pos] = token;
 		pos++;
 
@@ -93,6 +93,9 @@ char** assembler_split_line(char* line)
 		token = strtok(NULL, " ");
 
 	}
+		if (pos > 1) {
+			args[1][strlen(args[1])] = '\0';
+		}
 		args[pos] = NULL;
 
 
@@ -125,58 +128,103 @@ void assembler_parse_instr(char** args, int argc, instr* instr)
 		strcpy(instr->arg1, args[2]);
 	}
 	else if (strcmp(args[0], "LOAD") == 0){
+		// TODO differentiate the types of lds and stores
 		strcpy(instr->opcode, "LOAD");
-		strcpy(instr->fncode, "");
 		strcpy(instr->arg0, args[1]);
 		strcpy(instr->arg1, args[2]);
 	}
 	else if (strcmp(args[0], "STORE") == 0){
+		// TODO differentiate the types of lds and stores
 		strcpy(instr->opcode, "STORE");
+		strcpy(instr->arg0, args[1]);
+		strcpy(instr->arg1, args[2]);
 	}
 
 	else if (strcmp(args[0], "ADD") == 0){
 		strcpy(instr->opcode, "BIN");
+		strcpy(instr->fncode, "ADD");
+		strcpy(instr->arg0, args[1]);
+		strcpy(instr->arg1, args[2]);
 	}
 	else if (strcmp(args[0], "SUB") == 0){
 		strcpy(instr->opcode, "BIN");
+		strcpy(instr->fncode, "SUB");
+		strcpy(instr->arg0, args[1]);
+		strcpy(instr->arg1, args[2]);
 	}
 	else if (strcmp(args[0], "MULT") == 0){
 		strcpy(instr->opcode, "BIN");
+		strcpy(instr->fncode, "MULT");
+		strcpy(instr->arg0, args[1]);
+		strcpy(instr->arg1, args[2]);
 	}
 
 	else if (strcmp(args[0], "DIV") == 0){
 		strcpy(instr->opcode, "BIN");
+		strcpy(instr->fncode, "DIV");
+		strcpy(instr->arg0, args[1]);
+		strcpy(instr->arg1, args[2]);
 	}
 	else if (strcmp(args[0], "MOD") == 0){
 		strcpy(instr->opcode, "BIN");
+		strcpy(instr->fncode, "MOD");
+		strcpy(instr->arg0, args[1]);
+		strcpy(instr->arg1, args[2]);
 	}
 	else if (strcmp(args[0], "AND") == 0){
 		strcpy(instr->opcode, "BIN");
+		strcpy(instr->fncode, "AND");
+		strcpy(instr->arg0, args[1]);
+		strcpy(instr->arg1, args[2]);
 	}
 
 	else if (strcmp(args[0], "XOR") == 0){
 		strcpy(instr->opcode, "XOR");
+		strcpy(instr->fncode, "XOR");
+		strcpy(instr->arg0, args[1]);
+		strcpy(instr->arg1, args[2]);
 	}
 	else if (strcmp(args[0], "JMP") == 0){
 		strcpy(instr->opcode, "JMP");
+		strcpy(instr->fncode, "UCN");
+		strcpy(instr->arg0, args[1]);
 	}
 	else if (strcmp(args[0], "JGE") == 0){
+		strcpy(instr->opcode, "JMP");
+		strcpy(instr->fncode, "GE");
+		strcpy(instr->arg0, args[1]);
+
 
 	}
 	else if (strcmp(args[0], "JGT") == 0){
 		strcpy(instr->opcode, "JMP");
+		strcpy(instr->fncode, "GT");
+		strcpy(instr->arg0, args[1]);
+
 	}
 	else if (strcmp(args[0], "JEQ") == 0){
 		strcpy(instr->opcode, "JMP");
+		strcpy(instr->fncode, "EQ");
+		strcpy(instr->arg0, args[1]);
+
 	}
 	else if (strcmp(args[0], "JNE") == 0){
 		strcpy(instr->opcode, "JMP");
+		strcpy(instr->fncode, "NE");
+		strcpy(instr->arg0, args[1]);
+
 	}
 	else if (strcmp(args[0], "JLT") == 0){
 		strcpy(instr->opcode, "JMP");
+		strcpy(instr->fncode, "LT");
+		strcpy(instr->arg0, args[1]);
+
 	}
 	else if (strcmp(args[0], "JLE") == 0){
 		strcpy(instr->opcode, "JMP");
+		strcpy(instr->fncode, "LE");
+		strcpy(instr->arg0, args[1]);
+
 	}
 	else if (strcmp(args[0], "CALL") == 0){
 		strcpy(instr->opcode, "CALL");
@@ -192,12 +240,15 @@ void assembler_parse_instr(char** args, int argc, instr* instr)
 	}
 	else if (strcmp(args[0], "DRAWR") == 0){
 		strcpy(instr->opcode, "DRAW");
+		strcpy(instr->opcode, "REC");
 	}
 	else if (strcmp(args[0], "DRAWC") == 0){
 		strcpy(instr->opcode, "DRAW");
+		strcpy(instr->opcode, "CIR");
 	}
 	else if (strcmp(args[0], "DRAWL") == 0){
 		strcpy(instr->opcode, "DRAW");
+		strcpy(instr->opcode, "LIN");
 	}
 	else if (strcmp(args[0], "PRINT") == 0){
 		strcpy(instr->opcode, "PRINT");
@@ -232,11 +283,9 @@ void replace_labels(ast* ast)
 // parse assembler code into AST
 void assembler_parse(FILE* file, ast* ast)
 {
+	// TODO: FIX BUG, LOST INSTRUCTION IF EOF IS ON SAME LINE AS LAST INSTR
 	// get pointer to first instr in ast
-	//printf("getting instrs\n");
 	instr* current_instr = ast->instrs;
-	//printf("got instrs\n");
-
 
 	int end;
 	end = 0;
@@ -253,12 +302,11 @@ void assembler_parse(FILE* file, ast* ast)
 			//printf("args %s\n", args[arg_count]);
 			arg_count++;
 		}
-		printf("parsing instr\n");
+		//printf("parsing instr: %s\n", args[0]);
 		assembler_parse_instr(args, arg_count, current_instr); // parse the arguments into an ast instr_node
 		if (!end){
-			printf("hello: %s\n", current_instr->opcode);
-			ast->instrs->next = malloc(sizeof(instr));
-			current_instr = ast->instrs->next;
+			current_instr->next = malloc(sizeof(instr));
+			current_instr = current_instr->next;
 		}
 	}
 
@@ -269,6 +317,17 @@ void assembler_parse(FILE* file, ast* ast)
 	
 }
 
+void print_ast(ast* ast)
+{
+	instr* current_instr;
+	current_instr = ast->instrs;
+	while (current_instr->next != NULL)
+	{
+		printf("%s %s %s %s \n", current_instr->opcode, current_instr->fncode, current_instr->arg0, current_instr->arg1);
+		current_instr = current_instr->next;
+	}
+}
+
 // perform small optimizations on Assembler AST
 void assembler_optimize(ast* ast)
 {
@@ -276,9 +335,196 @@ void assembler_optimize(ast* ast)
 
 }
 
+void assembler_bin_instr(unsigned char* binary, instr* instr, int *place)
+{
+
+	if (strcmp(instr->opcode, "HALT") == 0){
+		binary[(*place)++] = 0x00;
+	}
+	else if (strcmp(instr->opcode, "NOP") == 0){
+		binary[(*place)++] = 0x10;
+	}
+
+	else if (strcmp(instr->opcode, "MOV") == 0){
+		binary[(*place)++] = 0x20;
+		unsigned char regs_args = 0x00;
+		regs_args = ((instr->arg0[0] % 65) + 1) << 4;
+		regs_args += ((instr->arg1[0] % 65) + 1);
+		binary[(*place)++] = regs_args;
+	}
+	else if (strcmp(instr->opcode, "LOAD") == 0){
+		// TODO differentiate the types of lds and stores
+		binary[(*place)++] = 0x30;
+		unsigned char regs_args = 0x00;
+		regs_args += ((instr->arg1[0] % 65) + 1);
+		binary[(*place)++] = regs_args;
+		uint16_t addr = (uint16_t) strtol(&instr->arg0[1], NULL, 16);
+		binary[(*place)++] = (unsigned char) (addr >> 8);
+		binary[(*place)++] = addr;
+
+	}
+	else if (strcmp(instr->opcode, "STORE") == 0){
+		// TODO differentiate the types of lds and stores
+		binary[(*place)++] = 0x40;
+		unsigned char regs_args = 0x00;
+		regs_args += ((instr->arg1[0] % 65) + 1);
+		binary[(*place)++] = regs_args;
+		uint16_t addr = (uint16_t) strtol(&instr->arg0[1], NULL, 16);
+		binary[(*place)++] = (unsigned char) (addr >> 8);
+		binary[(*place)++] = addr;
+
+	}
+
+	else if (strcmp(instr->fncode, "ADD") == 0){
+		binary[(*place)++] = 0x50;
+		unsigned char regs_args = 0x00;
+		regs_args = ((instr->arg0[0] % 65) + 1) << 4;
+		regs_args += ((instr->arg1[0] % 65) + 1);
+		binary[(*place)++] = regs_args;
+	}
+	else if (strcmp(instr->fncode, "SUB") == 0){
+		binary[(*place)++] = 0x51;
+		unsigned char regs_args = 0x00;
+		regs_args = ((instr->arg0[0] % 65) + 1) << 4;
+		regs_args += ((instr->arg1[0] % 65) + 1);
+		binary[(*place)++] = regs_args;
+
+	}
+	else if (strcmp(instr->fncode, "MULT") == 0){
+		binary[(*place)++] = 0x52;
+		unsigned char regs_args = 0x00;
+		regs_args = ((instr->arg0[0] % 65) + 1) << 4;
+		regs_args += ((instr->arg1[0] % 65) + 1);
+		binary[(*place)++] = regs_args;
+
+	}
+
+	else if (strcmp(instr->fncode, "DIV") == 0){
+		binary[(*place)++] = 0x53;
+		unsigned char regs_args = 0x00;
+		regs_args = ((instr->arg0[0] % 65) + 1) << 4;
+		regs_args += ((instr->arg1[0] % 65) + 1);
+		binary[(*place)++] = regs_args;
+	}
+	else if (strcmp(instr->fncode, "MOD") == 0){
+		binary[(*place)++] = 0x54;
+		unsigned char regs_args = 0x00;
+		regs_args = ((instr->arg0[0] % 65) + 1) << 4;
+		regs_args += ((instr->arg1[0] % 65) + 1);
+		binary[(*place)++] = regs_args;
+	}
+	else if (strcmp(instr->fncode, "AND") == 0){
+		binary[(*place)++] = 0x55;
+		unsigned char regs_args = 0x00;
+		regs_args = ((instr->arg0[0] % 65) + 1) << 4;
+		regs_args += ((instr->arg1[0] % 65) + 1);
+		binary[(*place)++] = regs_args;
+	}
+
+	else if (strcmp(instr->fncode, "XOR") == 0){
+		binary[(*place)++] = 0x56;
+		unsigned char regs_args = 0x00;
+		regs_args = ((instr->arg0[0] % 65) + 1) << 4;
+		regs_args += ((instr->arg1[0] % 65) + 1);
+		binary[(*place)++] = regs_args;
+	}
+	else if (strcmp(instr->fncode, "UCN") == 0){
+		binary[(*place)++] = 0x60;
+		uint16_t addr = (uint16_t) strtol(instr->arg0, NULL, 16);
+		binary[(*place)++] = (unsigned char) (addr >> 8);
+		binary[(*place)++] = addr;
+	}
+	else if (strcmp(instr->fncode, "JGE") == 0){
+		binary[(*place)++] = 0x61;
+		uint16_t addr = (uint16_t) strtol(instr->arg0, NULL, 16);
+		binary[(*place)++] = (unsigned char) (addr >> 8);
+		binary[(*place)++] = addr;
+	}
+	else if (strcmp(instr->fncode, "JGT") == 0){
+		binary[(*place)++] = 0x62;
+		uint16_t addr = (uint16_t) strtol(instr->arg0, NULL, 16);
+		binary[(*place)++] = (unsigned char) (addr >> 8);
+		binary[(*place)++] = addr;
+	}
+	else if (strcmp(instr->fncode, "JEQ") == 0){
+		binary[(*place)++] = 0x63;
+		uint16_t addr = (uint16_t) strtol(instr->arg0, NULL, 16);
+		binary[(*place)++] = (unsigned char) (addr >> 8);
+		binary[(*place)++] = addr;
+
+	}
+	else if (strcmp(instr->fncode, "JNE") == 0){
+		binary[(*place)++] = 0x64;
+		uint16_t addr = (uint16_t) strtol(instr->arg0, NULL, 16);
+		binary[(*place)++] = (unsigned char) (addr >> 8);
+		binary[(*place)++] = addr;
+	}
+	else if (strcmp(instr->fncode, "JLT") == 0){
+		binary[(*place)++] = 0x65;
+		uint16_t addr = (uint16_t) strtol(instr->arg0, NULL, 16);
+		binary[(*place)++] = (unsigned char) (addr >> 8);
+		binary[(*place)++] = addr;
+
+	}
+	else if (strcmp(instr->fncode, "JLE") == 0){
+		binary[(*place)++] = 0x66;
+		uint16_t addr = (uint16_t) strtol(instr->arg0, NULL, 16);
+		binary[(*place)++] = (unsigned char) (addr >> 8);
+		binary[(*place)++] = (unsigned char) addr;
+
+	}
+	else if (strcmp(instr->opcode, "CALL") == 0){
+		binary[(*place)++] = 0x70;
+
+	}
+	else if (strcmp(instr->opcode, "RET") == 0){
+		binary[(*place)++] = 0x80;
+	}
+	else if (strcmp(instr->opcode, "PUSH") == 0){
+		binary[(*place)++] = 0x90;
+	}
+	else if (strcmp(instr->opcode, "POP") == 0){
+		binary[(*place)++] = 0xA0;
+	}
+	else if (strcmp(instr->fncode, "REC") == 0){
+		binary[(*place)++] = 0xB0;
+	}
+	else if (strcmp(instr->fncode, "CIR") == 0){
+		binary[(*place)++] = 0xB1;
+
+	}
+	else if (strcmp(instr->fncode, "LIN") == 0){
+		binary[(*place)++] = 0xB2;
+
+	}
+	else if (strcmp(instr->opcode, "PRINT") == 0){
+		binary[(*place)++] = 0xC0;
+
+	}
+	
+
+}
+
 
 void assembler_create_bin(ast* ast)
 {
+	// TODO: calculate number of bytes needed from ast
+	unsigned char* binary = malloc(sizeof(unsigned char) * 1000);
+	int place = 0;
+	int i = 0;
+	instr* current_instr = ast->instrs;
+	while (current_instr->next) {
+	assembler_bin_instr(binary, current_instr, &place);
+	current_instr = current_instr->next;
+	i++;
+	}
+
+
+	for(int i = 0; i < place; i++){
+		printf("%02x ", binary[i]);
+	}
+		printf("\n");
+
 
 }
 
@@ -288,7 +534,11 @@ void assembler(char* file_name)
 {
 	// open .pasm file for parsing
 	FILE* file = assembler_open_file(file_name);
-	printf("opened file\n");
+	if (!file) {
+		printf("asm: No such file or directory exists\n");
+		return;
+	}
+	//printf("opened file\n");
 
 	// allocate memory for instruction ast
 	ast* ast = malloc(sizeof(ast));
@@ -306,13 +556,13 @@ void assembler(char* file_name)
 
 	// call parse function to create ast
 	assembler_parse(file, ast);
-	printf("parsed\n");
+	//printf("parsed\n");
+	print_ast(ast);
+
 
 
 	// optimize code
 	assembler_optimize(ast);
-
-
 	// create binary file
 	assembler_create_bin(ast);
 

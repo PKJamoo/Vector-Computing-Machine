@@ -4,7 +4,7 @@
 /* Assembler Architecture Constants and Structs */
 
 #define ASSEMBLER_BUFF_SIZE 512
-#define ASSEMBLER_PARAMS_SIZE 10
+#define ASSEMBLER_PARAMS_SIZE 20
 
 
 typedef struct struct_label	label;
@@ -22,7 +22,7 @@ struct struct_label {
 struct struct_instr {
 
 	char opcode[5];
-	char fncode[3];
+	char fncode[5];
 	char arg0[16];
 	char arg1[16];
 	uint16_t address;
