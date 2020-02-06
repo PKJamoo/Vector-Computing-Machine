@@ -2,12 +2,12 @@
 Simple emulator for faux computer architecture with support 
 for assembly vector drawing primitives.
 
-install by cloning the github repo then calling make in terminal.
+install by cloning the github repo then calling make in terminal.\
 Running with ./VCM will input you directly into the shell.
 
-CURRENT SHELL COMMANDS TO USE:
-open [FILE_NAME] (runs binary files)
-asm [FILE_NAME] (runs the assembler on a .PASM file, writes out the binary code)
+CURRENT SHELL COMMANDS TO USE:\
+open [FILE_NAME] (runs binary files)\
+asm [FILE_NAME] (runs the assembler on a .PASM file, writes out the binary code)\
 quit (shuts down the VCM)
 
 Specifications for Assembly Instruction Set
