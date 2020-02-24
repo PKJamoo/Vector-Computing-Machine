@@ -14,8 +14,8 @@ typedef struct struct_jump jmp_instr;
 
 struct struct_label {
 
-	char* label;
-	int address;
+	char name[10];
+	uint16_t address;
 	label * next;
 };
 
@@ -67,3 +67,4 @@ void assembler(char* file_name);
 
 
 #endif // ASSEMBLER_H_
+

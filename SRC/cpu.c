@@ -1,6 +1,11 @@
 #include <hardware.h>
-
 /*  CPU   */
+
+
+/*
+
+
+*/
 
 
 // global variables for CPU operations
@@ -11,6 +16,14 @@ unsigned char func_byte;
 int valC;
 int from_reg;
 int to_reg;
+
+
+cpu* initialize_cpu(mem* mem)
+{
+	cpu* cpu = malloc(sizeof(cpu));
+	cpu->mem = mem;
+	return cpu;
+}
 
 /*
 set given cpu's registers, condition flags and instruction pointer back to default values
@@ -30,7 +43,7 @@ void reset_cpu ( cpu* cpu )
 
 void fetch( cpu* cpu )
 {
-	unsigned char instruction_byte = mainmem[cpu->ip];
+	unsigned char instruction_byte = cpu->mem->RAM[cpu->ip];
 	unsigned char register_byte;
 	unsigned char op_byte = instruction_byte >> 4;
 	unsigned char func_byte = instruction_byte & 0x0F;
@@ -48,49 +61,49 @@ void fetch( cpu* cpu )
 			cpu->ip++;
 			break;
 		case MOV:
-			register_byte = mainmem[cpu->ip + 1];
+			register_byte = cpu->mem->RAM[cpu->ip + 1];
 			from_reg = register_byte >> 4;
 			to_reg = register_byte & 0x0F;
 			move(cpu, func_byte, from_reg, to_reg);
 			break;
 		case LOAD:
-			register_byte = mainmem[cpu->ip + 1];
+			register_byte = cpu->mem->RAM[cpu->ip + 1];
 			from_reg = register_byte >> 4;
 			to_reg = register_byte & 0x0F;
-			valC = mainmem[cpu->ip + 2] << 8 | mainmem[cpu->ip + 3];
+			valC = cpu->mem->RAM[cpu->ip + 2] << 8 | cpu->mem->RAM[cpu->ip + 3];
 			load(cpu, func_byte, from_reg, to_reg, valC);
 			break;
 		case STORE:
-			register_byte = mainmem[cpu->ip + 1];
+			register_byte = cpu->mem->RAM[cpu->ip + 1];
 			from_reg = register_byte >> 4;
 			to_reg = register_byte & 0x0F;
 			store(cpu, func_byte, from_reg, to_reg, valC);
 			break;
 		case BINOP:
-			register_byte = mainmem[cpu->ip + 1];
+			register_byte = cpu->mem->RAM[cpu->ip + 1];
 			from_reg = register_byte >> 4;
 			to_reg = register_byte & 0x0F;
 			binop(cpu, func_byte, from_reg, to_reg);
 			break;
 		case JMP:
-			valC = mainmem[cpu->ip + 1] << 8 || mainmem[cpu->ip + 2];
+			valC = cpu->mem->RAM[cpu->ip + 1] << 8 || cpu->mem->RAM[cpu->ip + 2];
 			jump(cpu, func_byte, valC);
 			break;
 		case CALL:
-			valC = mainmem[cpu->ip + 1] << 8 || mainmem[cpu->ip + 2];
+			valC = cpu->mem->RAM[cpu->ip + 1] << 8 || cpu->mem->RAM[cpu->ip + 2];
 			call(cpu, valC);
 			break;
 		case RET:
 			ret(cpu);
 			break;
 		case PUSH:
-			register_byte = mainmem[cpu->ip + 1];
+			register_byte = cpu->mem->RAM[cpu->ip + 1];
 			from_reg = register_byte >> 4;
 			to_reg = register_byte & 0x0F;
 			push(cpu, from_reg);
 			break;
 		case POP:
-			register_byte = mainmem[cpu->ip + 1];
+			register_byte = cpu->mem->RAM[cpu->ip + 1];
 			from_reg = register_byte >> 4;
 			to_reg = register_byte & 0x0F;
 			pop(cpu, to_reg);
@@ -106,8 +119,10 @@ void fetch( cpu* cpu )
 
 void halt ( cpu* cpu )
 {
-	cpu->running = FALSE;
+	// TODO: CHANGE HALT TO RESET TO SHELL 
+	cpu->running = false;
 }
+
 void move( cpu* cpu, unsigned char op_code, unsigned char regA, unsigned char regB)
 {
 	switch (op_code)
@@ -158,11 +173,12 @@ void load( cpu* cpu, unsigned char op_code, int regA, int regB, int16_t valC)
 			cpu->ip = cpu->ip + 4;
 			break;
 		case MEM:
-			cpu->regs[regB] = (mainmem[valC] << 8) | mainmem[valC + 1];
+			cpu->regs[regB] = (cpu->mem->RAM[valC] << 8) | cpu->mem->RAM[valC + 1];
 			cpu->ip = cpu->ip + 4;
 			break;
 		case IND:
-			cpu->regs[regB] = (mainmem[valC + (2 * cpu->regs[regA]) ] << 8) | mainmem[valC + (2 * cpu->regs[regA]) + 1];
+			cpu->regs[regB] = (cpu->mem->RAM[valC + (2 * cpu->regs[regA]) ] << 8) 
+							   | cpu->mem->RAM[valC + (2 * cpu->regs[regA]) + 1];
 			cpu->ip = cpu->ip + 4;
 			break;
 		default:
@@ -178,13 +194,13 @@ void store( cpu* cpu, unsigned char op_code, int regA, int regB, int16_t valC)
 	switch(op_code)
 	{
 		case MEM:
-			mainmem[valC] = cpu->regs[regB] >> 8;
-			mainmem[valC + 1] = cpu->regs[regB] & 0x00FF;
+			cpu->mem->RAM[valC] = cpu->regs[regB] >> 8;
+			cpu->mem->RAM[valC + 1] = cpu->regs[regB] & 0x00FF;
 			cpu->ip = cpu->ip + 4;
 			break;
 		case IND:
-			mainmem[valC + (2 * cpu->regs[regA])] = cpu->regs[regB] >> 8;
-			mainmem[valC + (2 * cpu->regs[regA] + 1)] = cpu->regs[regB] & 0x00FF;
+			cpu->mem->RAM[valC + (2 * cpu->regs[regA])] = cpu->regs[regB] >> 8;
+			cpu->mem->RAM[valC + (2 * cpu->regs[regA] + 1)] = cpu->regs[regB] & 0x00FF;
 			cpu->ip = cpu->ip + 4;
 			break;
 		default:
@@ -282,7 +298,7 @@ void jump( cpu* cpu, unsigned char op_code, int16_t valC)
 }
 void call( cpu* cpu, int16_t valC)
 {
-	// maybe push all register values
+	// TODO: PUSH ALL LOCAL VARIABLES, CHANGE STACK PTR
 
 	cpu->return_address = ++cpu->ip;
 	cpu->ip = valC;
@@ -290,7 +306,7 @@ void call( cpu* cpu, int16_t valC)
 }
 void ret( cpu* cpu )
 {
-	// maybe pop all register values
+	// TODO: PUSH ALL LOCAL VARIABLES, CHANGE STACK PTR
 	
 	cpu->ip = cpu->return_address;
 
@@ -302,8 +318,8 @@ void push(cpu* cpu, int from_reg)
 	cpu->regs[RSP] = cpu->regs[RSP] - 2;
 	unsigned char lo_byte = cpu->regs[from_reg] >> 8;
 	unsigned char hi_byte = cpu->regs[from_reg] & 0X0F; 
-	mainmem[cpu->regs[RSP]] = hi_byte;
-	mainmem[cpu->regs[RSP] + 1] = lo_byte;
+	cpu->mem->RAM[cpu->regs[RSP]] = hi_byte;
+	cpu->mem->RAM[cpu->regs[RSP] + 1] = lo_byte;
 
 	
 
@@ -311,8 +327,8 @@ void push(cpu* cpu, int from_reg)
 }
 void pop (cpu* cpu, int to_reg)
 {	
-	unsigned char lo_byte = mainmem[cpu->regs[RSP]];
-	unsigned char hi_byte = mainmem[cpu->regs[RSP] + 1];
+	unsigned char lo_byte = cpu->mem->RAM[cpu->regs[RSP]];
+	unsigned char hi_byte = cpu->mem->RAM[cpu->regs[RSP] + 1];
 	cpu->regs[to_reg] = lo_byte | hi_byte;
 	cpu->regs[RSP] = cpu->regs[RSP] + 2;
 
@@ -320,9 +336,10 @@ void pop (cpu* cpu, int to_reg)
 }
 
 
-void draw (cpu* cpu, gpu* gpu)
+void draw (cpu* cpu)
 {
 
 
 	
 }
+

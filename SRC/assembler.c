@@ -44,7 +44,7 @@ char* assembler_read_line(FILE* file, int* end)
 			}
 			buffer[pos] = '\0';
 			// test print statement
-			printf("asm code: %s\n", buffer);
+			//printf("asm code: %s\n", buffer);
 			return buffer;
 		}
 		else {
@@ -111,33 +111,41 @@ char** assembler_split_line(char* line)
 }
 
 // parse a single line of code into an instr for the ast
-void assembler_parse_instr(char** args, int argc, instr* instr)
+void assembler_parse_instr(char** args, int argc, instr* instr, uint16_t *address)
 {
 	// big if/else tree based on type of instruction
 	if (strcmp(args[0], "HALT") == 0){
 		strcpy(instr->opcode, "HALT");
+		instr->address = (*address)++;
 
 	}
 	else if (strcmp(args[0], "NOP") == 0){
 		strcpy(instr->opcode, "NOP");
+		instr->address = (*address)++;
 	}
 
 	else if (strcmp(args[0], "MOV") == 0){
 		strcpy(instr->opcode, "MOV");
 		strcpy(instr->arg0, args[1]);
 		strcpy(instr->arg1, args[2]);
+		instr->address = *address;
+		*address += 2;
 	}
 	else if (strcmp(args[0], "LOAD") == 0){
 		// TODO differentiate the types of lds and stores
 		strcpy(instr->opcode, "LOAD");
 		strcpy(instr->arg0, args[1]);
 		strcpy(instr->arg1, args[2]);
+		instr->address = *address;
+		*address += 4;
 	}
 	else if (strcmp(args[0], "STORE") == 0){
 		// TODO differentiate the types of lds and stores
 		strcpy(instr->opcode, "STORE");
 		strcpy(instr->arg0, args[1]);
 		strcpy(instr->arg1, args[2]);
+		instr->address = *address;
+		*address += 4;
 	}
 
 	else if (strcmp(args[0], "ADD") == 0){
@@ -145,18 +153,24 @@ void assembler_parse_instr(char** args, int argc, instr* instr)
 		strcpy(instr->fncode, "ADD");
 		strcpy(instr->arg0, args[1]);
 		strcpy(instr->arg1, args[2]);
+		instr->address = *address;
+		*address += 2;
 	}
 	else if (strcmp(args[0], "SUB") == 0){
 		strcpy(instr->opcode, "BIN");
 		strcpy(instr->fncode, "SUB");
 		strcpy(instr->arg0, args[1]);
 		strcpy(instr->arg1, args[2]);
+		instr->address = *address;
+		*address += 2;
 	}
 	else if (strcmp(args[0], "MULT") == 0){
 		strcpy(instr->opcode, "BIN");
 		strcpy(instr->fncode, "MULT");
 		strcpy(instr->arg0, args[1]);
 		strcpy(instr->arg1, args[2]);
+		instr->address = *address;
+		*address += 2;
 	}
 
 	else if (strcmp(args[0], "DIV") == 0){
@@ -164,18 +178,24 @@ void assembler_parse_instr(char** args, int argc, instr* instr)
 		strcpy(instr->fncode, "DIV");
 		strcpy(instr->arg0, args[1]);
 		strcpy(instr->arg1, args[2]);
+		instr->address = *address;
+		*address += 2;
 	}
 	else if (strcmp(args[0], "MOD") == 0){
 		strcpy(instr->opcode, "BIN");
 		strcpy(instr->fncode, "MOD");
 		strcpy(instr->arg0, args[1]);
 		strcpy(instr->arg1, args[2]);
+		instr->address = *address;
+		*address += 2;
 	}
 	else if (strcmp(args[0], "AND") == 0){
 		strcpy(instr->opcode, "BIN");
 		strcpy(instr->fncode, "AND");
 		strcpy(instr->arg0, args[1]);
 		strcpy(instr->arg1, args[2]);
+		instr->address = *address;
+		*address += 2;
 	}
 
 	else if (strcmp(args[0], "XOR") == 0){
@@ -183,16 +203,22 @@ void assembler_parse_instr(char** args, int argc, instr* instr)
 		strcpy(instr->fncode, "XOR");
 		strcpy(instr->arg0, args[1]);
 		strcpy(instr->arg1, args[2]);
+		instr->address = *address;
+		*address += 2;
 	}
 	else if (strcmp(args[0], "JMP") == 0){
 		strcpy(instr->opcode, "JMP");
 		strcpy(instr->fncode, "UCN");
 		strcpy(instr->arg0, args[1]);
+		instr->address = *address;
+		*address += 3;
 	}
 	else if (strcmp(args[0], "JGE") == 0){
 		strcpy(instr->opcode, "JMP");
 		strcpy(instr->fncode, "GE");
 		strcpy(instr->arg0, args[1]);
+		instr->address = *address;
+		*address += 3;
 
 
 	}
@@ -200,43 +226,61 @@ void assembler_parse_instr(char** args, int argc, instr* instr)
 		strcpy(instr->opcode, "JMP");
 		strcpy(instr->fncode, "GT");
 		strcpy(instr->arg0, args[1]);
+		instr->address = *address;
+		*address += 3;
 
 	}
 	else if (strcmp(args[0], "JEQ") == 0){
 		strcpy(instr->opcode, "JMP");
 		strcpy(instr->fncode, "EQ");
 		strcpy(instr->arg0, args[1]);
+		instr->address = *address;
+		*address += 3;
 
 	}
 	else if (strcmp(args[0], "JNE") == 0){
 		strcpy(instr->opcode, "JMP");
 		strcpy(instr->fncode, "NE");
 		strcpy(instr->arg0, args[1]);
+		instr->address = *address;
+		*address += 3;
 
 	}
 	else if (strcmp(args[0], "JLT") == 0){
 		strcpy(instr->opcode, "JMP");
 		strcpy(instr->fncode, "LT");
 		strcpy(instr->arg0, args[1]);
+		instr->address = *address;
+		*address += 3;
 
 	}
 	else if (strcmp(args[0], "JLE") == 0){
 		strcpy(instr->opcode, "JMP");
 		strcpy(instr->fncode, "LE");
 		strcpy(instr->arg0, args[1]);
+		instr->address = *address;
+		*address += 3;
 
 	}
 	else if (strcmp(args[0], "CALL") == 0){
 		strcpy(instr->opcode, "CALL");
+		instr->address = *address;
+		*address += 3;
 	}
 	else if (strcmp(args[0], "RET") == 0){
 		strcpy(instr->opcode, "RET");
+		instr->address = *address;
+		*address += 3;
 	}
 	else if (strcmp(args[0], "PUSH") == 0){
 		strcpy(instr->opcode, "PUSH");
+		instr->address = *address;
+		*address += 1;
 	}
 	else if (strcmp(args[0], "POP") == 0){
 		strcpy(instr->opcode, "POP");
+		instr->address = *address;
+		*address += 1;
 	}
 	else if (strcmp(args[0], "DRAWR") == 0){
 		strcpy(instr->opcode, "DRAW");
@@ -256,9 +300,6 @@ void assembler_parse_instr(char** args, int argc, instr* instr)
 	else {
 		printf("Illegal Command Error: %s is not a valid operation", args[0]);
 	}
-
-
-
 }
 
 
@@ -286,6 +327,10 @@ void assembler_parse(FILE* file, ast* ast)
 	// TODO: FIX BUG, LOST INSTRUCTION IF EOF IS ON SAME LINE AS LAST INSTR
 	// get pointer to first instr in ast
 	instr* current_instr = ast->instrs;
+	label* current_label = ast->labels;
+	// set up current address
+	uint16_t address = 0;
+
 
 	int end;
 	end = 0;
@@ -295,36 +340,61 @@ void assembler_parse(FILE* file, ast* ast)
 			assembler_read_line(file, &end)); // read a single line, determine if file is ended
 			if (end) break;					// check if we're on the last line and leave the loop
 
-
-		//printf("read line, split line\n");
 		int arg_count = 0;
 		while (args[arg_count]){
-			//printf("args %s\n", args[arg_count]);
 			arg_count++;
 		}
-		//printf("parsing instr: %s\n", args[0]);
-		assembler_parse_instr(args, arg_count, current_instr); // parse the arguments into an ast instr_node
-		if (!end){
-			current_instr->next = malloc(sizeof(instr));
-			current_instr = current_instr->next;
+		// logic to deal with labels
+		
+		if (strcmp(&args[0][strlen(args[0]) - 1], ":") == 0){ 	// if :, it means it is a label.
+			// if the label is on it's own line, move on.
+			args[0][strlen(args[0]) - 1] = '\0';
+			strcpy(current_label->name, args[0]);
+			current_label->address = address;
+			//printf("label name: %s %d\n", current_label->name, current_label->address);
+
+			current_label->next = malloc(sizeof(label));
+			current_label = current_label->next;
+
+			if (arg_count == 1) {continue;}
+			else {
+				// if the label is on the same line as an instruction.
+				char* old_arg = args[0];
+				// delete the label instruction.
+				args = &args[1];
+				arg_count--;
+				// free the memory
+				//free(old_arg);
+				old_arg = NULL;
+			}
 		}
-	}
-
-	// find all labels in file
-	ast->labels = find_labels(file);
-
-
-	
+		assembler_parse_instr(args, arg_count, current_instr, &address); // parse the arguments into an ast instr_node
+		current_instr->next = malloc(sizeof(instr));
+		current_instr = current_instr->next;
+	} 
 }
 
 void print_ast(ast* ast)
 {
 	instr* current_instr;
 	current_instr = ast->instrs;
+
+	label* current_label;
+	current_label = ast->labels;
+
+	printf("\nINSTRUCTIONS\n");
 	while (current_instr->next != NULL)
 	{
-		printf("%s %s %s %s \n", current_instr->opcode, current_instr->fncode, current_instr->arg0, current_instr->arg1);
+		printf("ADDR: %d | INSTR: %s %s %s %s \n", current_instr->address, current_instr->opcode, current_instr->fncode, current_instr->arg0, current_instr->arg1);
 		current_instr = current_instr->next;
+	}
+
+	printf("\nLABELS\n");
+	while (current_label->next != NULL)
+	{
+		printf("NAME: %s | ADDR: %d\n", current_label->name, current_label->address);
+		current_label = current_label->next;
+
 	}
 }
 
@@ -337,6 +407,7 @@ void assembler_optimize(ast* ast)
 
 void assembler_bin_instr(unsigned char* binary, instr* instr, int *place)
 {
+
 
 	if (strcmp(instr->opcode, "HALT") == 0){
 		binary[(*place)++] = 0x00;
@@ -524,8 +595,6 @@ void assembler_create_bin(ast* ast)
 		printf("%02x ", binary[i]);
 	}
 		printf("\n");
-
-
 }
 
 
@@ -559,8 +628,6 @@ void assembler(char* file_name)
 	//printf("parsed\n");
 	print_ast(ast);
 
-
-
 	// optimize code
 	assembler_optimize(ast);
 	// create binary file
@@ -570,7 +637,24 @@ void assembler(char* file_name)
 	fclose(file);
 
 	// free AST after use
+	/*
+	instr* temp_instr;
+	while (ast->instrs != NULL){
+		temp_instr = ast->instrs;
+		ast->instrs = ast->instrs->next;
+		free(temp_instr);
+	}
+	ast->instrs = NULL;
+	label* temp_label;
+	while (ast->labels != NULL){
+		temp_label = ast->labels;
+		ast->labels = ast->labels->next;
+		free(temp_label);
+	}
+	ast->labels = NULL;
 
+	free(ast);
+	*/
 
 }
 

@@ -1,0 +1,36 @@
+General:
+1. Write Logger to record CPU and GPU internals for debugging
+	- Write out to files
+2. Use Check to Write unit testing suite.
+3. Figure out loop logic to run VM with SDL.
+4. Improve C Code
+
+
+SPECS:
+Write full specifications of capabilities of CPU, GPU and MEM.
+
+
+
+CPU:
+1. better error handling in CPU functions
+2. interface with drawing functions
+3. 
+
+
+MEM:
+1. Decide on memory layout.
+2. Write memory initializer
+3. In CPU and GPU initializers, give pointers to different sections of memory.
+4. Write boundschecking functions, with error handling.
+
+GPU:
+
+1. Write Vector Drawing mode for CPU commands.
+2. Write tile drawing mode.
+3. Write spriting code.
+
+
+GUI:
+1. interface GUI with VRAM to draw to SDL window
+2. add window resizing, with function to map pixel sizes to window size.
+3. Debug mode?
