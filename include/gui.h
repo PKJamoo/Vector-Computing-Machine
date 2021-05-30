@@ -1,14 +1,13 @@
 #ifndef GUI_H_
 #define GUI_H_
 
-#include <SDL2/SDL.h>
 
 /*
 NEEDS:
 ALL INPUT/OUTPUT must happen through calls from cpu/gpu
 READ INPUT FROM USER : CPU -> GUI -> CPU
 UPDATE SCREEN: 		   GPU -> VRAM -> GUI
-*/
+
 
 typedef struct struct_gui GUI;
 
@@ -26,4 +25,6 @@ struct struct_gui {
 	SDL_Event* event;
 };
 
+*/
 #endif // GUI_H
+

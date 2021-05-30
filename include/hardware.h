@@ -20,6 +20,13 @@ struct struct_comp {
 	mem* mem;
 };
 
+#define TRUE 1
+#define FALSE 0
+
+unsigned char mainmem[MEM_SIZE];
+cpu* processor;
+gpu* graphics;
+
 
 
 #endif // HARDWARE_H_

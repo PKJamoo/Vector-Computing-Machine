@@ -23,7 +23,7 @@ OBJ := $(patsubst %,$(OBJ_PATH)%,$(OBJ1))
 #build .o files
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	@echo [CC] $<
-	@$(CC) $(C_FLAGS) -o $@ -c $< $(INC_PATH) -F/Library/Frameworks -framework SDL2
+	@$(CC) $(C_FLAGS) -o $@ -c $< $(INC_PATH)
 
 #build binary
 $(TARGET): $(OBJ)

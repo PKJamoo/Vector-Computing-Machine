@@ -1,6 +1,6 @@
-#include <SDL2/SDL.h>
 #include "hardware.h"
 #include "gui.h"
+#include "shell.h"
 
 
 comp* initialize_VCM(){
@@ -26,55 +26,16 @@ comp* initialize_VCM(){
 
 int main(void) 
 {
-	// initialize GUI
-	GUI* gui = initialize_gui();
 
-	// intialize VCM
-	comp* comp = initialize_VCM();
+	// initialize hardware
+	unsigned char mainmem[MEM_SIZE];
+	processor = malloc(sizeof(cpu));
+	graphics = malloc(sizeof(gpu));
 
-	// begin loop
-	int quit_flag = 0;
-
-
-	//SDL_Surface* temp_surface = SDL_CreateRGBSurface(0, 640, 480, 8, 0, 0, 0, 0);
-	//SDL_LockSurface( temp_surface );
-	//set_pixel(150, 150, temp_surface);
-	//SDL_UnlockSurface( temp_surface );
-	//SDL_BlitSurface(temp_surface, NULL, gui->screen, NULL);
-	//SDL_UpdateWindowSurface( gui->window );
-
-	while (!quit_flag) {
-		// check event
-		if( SDL_PollEvent(gui->event) != false ) {
-            //Click the quit button
-            if( gui->event->type == SDL_QUIT ) {
-                quit_flag = true;
-            }
-            // I/O stuff
-		}
-
-		// VCM cycles
-	}
-
-	// Deallocate temp_surface
-	//SDL_FreeSurface( temp_surface );
-	//temp_surface = NULL;
-
-	//free (gui->event);
-	//gui->event = NULL;
-
-	//Deallocate surface
-    //SDL_FreeSurface( gui->screen );
-    //gui->screen = NULL;
-
-    //Destroy window
-    //SDL_DestroyWindow( gui->window );
-    //gui->window = NULL;
-
-    //Quit SDL subsystems
-    //SDL_Quit();
 	
-	return 0;
+	shell();
+
+	printf("halt: processor stopped\n");
 
 }
 

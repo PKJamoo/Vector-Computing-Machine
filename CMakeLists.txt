@@ -4,21 +4,16 @@ cmake_minimum_required(VERSION 3.10)
 project(VCM C)
 
 add_compile_options(
-  "-Wall" "-Wpedantic" "-Wextra" "-fexceptions"
+  "-Wall" "-fexceptions"
   "-O0" "-g3" "-ggdb"
 )
 
-
-find_package(SDL2 REQUIRED)
-
-# header files & SDL
-include_directories(HEAD)
-include_directories(${SDL2_INCLUDE_DIRS})
+# header files
+include_directories(include)
 
 
 # source files
-file(GLOB SOURCES "SRC/*.c")
+file(GLOB SOURCES "src/*.c")
 
 # add the executable
 add_executable(VCM ${SOURCES})
-target_link_libraries(VCM ${SDL2_LIBRARIES})

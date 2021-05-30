@@ -1,6 +1,5 @@
 #include <gui.h>
-#include <SDL2/SDL.h>
-
+/*
 
 
 void set_pixel(int x, int y, SDL_Surface* surface)
@@ -32,3 +31,4 @@ GUI* initialize_gui() {
 	return gui;
 
 }
+*/

@@ -89,8 +89,7 @@ enum REGS
 	REG12,	//
 	REG13,	//
 	REG14,	//
-	REG15,	//	***
-	REG16 // F - dummy register for unused registers in operations
+	REG15,	//	***// F - dummy register for unused registers in operations
 };
 
 

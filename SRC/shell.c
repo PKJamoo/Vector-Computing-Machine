@@ -1,42 +1,31 @@
-/*
-#include <shell.h>
-#include <hardware.h>
-#include <assembler.h>
+#include "shell.h"
+#include "hardware.h"
 
-// global file pointer for opening files
+
 FILE* file;
-
 // shell helper function for opening files
 void run_file()
 {
 	processor->running = TRUE;
 	while(processor->running){
+		printf("Fetch\n");
 		fetch(processor);
 
 	}
 }
 
-// include path variable for shell command type.
-inline void load_file (char* file_name)
+void load_file (char* file_name)
 {
-	// create String filepath
-	char* file_path = "TESTBIN/";
-
-	
+	char* file_path = "C:\\Users\\Liam\\Desktop\\VCM\\Vector-Computing-Machine\\TESTBIN\\";
 	char* full_path = malloc(strlen(file_path) + strlen(file_name) + 1);
 	strcpy(full_path, file_path);
 	strcat(full_path, file_name);
-	// open file
 	file = fopen(full_path, "rb");
-	// find file size
 	int file_size;
 	fseek(file, 0, SEEK_END);
 	file_size = ftell(file);
 	rewind(file);
-	// read file into mainmem
 	fread(mainmem, sizeof(unsigned char), file_size, file);
-	// close file and free path string
-	fclose(file);
 	free(full_path);
 }
 
@@ -44,7 +33,6 @@ inline void load_file (char* file_name)
 char* shell_read_line() 
 {
 	char *line = malloc(sizeof(char) * SHELL_BUFF_SIZE);
-	int buffer_size = SHELL_BUFF_SIZE;
 	int pos = 0;
 	char new_char;
 
@@ -65,45 +53,28 @@ char* shell_read_line()
 		}
 		pos++;
 
-		// re-allocate buffer
-		if (pos >= buffer_size) {
-	      buffer_size += SHELL_BUFF_SIZE;
-	      line = realloc(line, buffer_size);
-	      if (!line) {
-			perror("sh: memory allocation error.\n");
-	      	}
-	  	}
+	// deal with buffer size issues in the future maybe?
 	}
 }
 
 
 char** shell_split_line(char* line) 
 {
-	int pos = 0;
-	int params_size = SHELL_PARAMS_SIZE;
+	int position = 0;
 	char* token;
-	char** args = malloc(params_size * sizeof(char*));
+	char** args = malloc(SHELL_BUFF_SIZE * sizeof(char*));
 	// find first command
 	token = strtok(line, " ");
 
 	while (token != NULL){
 
-		args[pos] = token;
-		pos++;
-
-		// re-allocate buffer
-		if (pos >= params_size) {
-	      params_size += SHELL_PARAMS_SIZE;
-	      args = realloc(args, params_size);
-	      if (!args) {
-			perror("sh: memory allocation error.\n");
-	      	}
-	  	}
+		args[position] = token;
+		position++;
 
 		token = strtok(NULL, " ");
 
 	}
-		args[pos] = NULL;
+		args[position] = NULL;
 
 		return args;
 
@@ -115,31 +86,13 @@ int	    shell_execute_command(int argc, char** args)
 {
 		if (strcmp(args[0], "open") == 0){
 			if (argc != 2) {
-				printf("sh: must include name of file to run\n");
+				printf("MUST INCLUDE FILENAME\n");
 				return 0;
 			}
 			load_file(args[1]);
 			run_file();
 			return 0;
 
-		}
-
-		else if (strcmp(args[0], "asm") == 0) {
-			if (argc != 2) {
-				printf("sh: must include name of file to assemble\n");
-				return 0;
-			}
-			assembler(args[1]);
-		}
-
-		else if ((strcmp(args[0], "quit") == 0 )
-					 || (strcmp(args[0], "q") == 0 )) {
-
-			return -1;
-		}
-
-		else {
-		printf("sh: %s is not a valid command\n", args[0]);
 		}
 		return 0;
 }
@@ -151,7 +104,7 @@ int 	shell()
 	char* line;
 	char** args;
 	while (status >= 0) {
-		printf("> ");
+		printf(">");
 		// read and parse shell commands
 		line = shell_read_line();
 		args = shell_split_line(line);
@@ -170,5 +123,4 @@ int 	shell()
 	return 0;
 
 
-}
-*/
+} 
