@@ -1,7 +1,0 @@
-LOAD #1000, A
-LOAD #2000, B
-ADD A, B
-SUB A, B
-MOV A, C
-MOV B, D
-HALT
