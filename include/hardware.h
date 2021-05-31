@@ -23,7 +23,7 @@ struct struct_comp {
 #define TRUE 1
 #define FALSE 0
 
-unsigned char mainmem[MEM_SIZE];
+mem* mainmem;
 cpu* processor;
 gpu* graphics;
 

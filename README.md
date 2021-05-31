@@ -3,7 +3,14 @@ Simple emulator for faux computer architecture with support
 for assembly vector drawing primitives.
 
 install by cloning the github repo then calling make in terminal.\
-Running with ./VCM will input you directly into the shell.
+To Run use the following commands\
+
+    cd build
+    cmake ..\
+    cmake --build .
+    cd Debug
+    VCM.exe
+
 
 CURRENT SHELL COMMANDS TO USE:\
 open [FILE_NAME] (runs binary files)\

@@ -28,8 +28,9 @@ int main(void)
 {
 
 	// initialize hardware
-	unsigned char mainmem[MEM_SIZE];
-	processor = malloc(sizeof(cpu));
+	mainmem = initialize_memory();
+	processor = initialize_cpu(mainmem);
+	reset_cpu(processor);
 	graphics = malloc(sizeof(gpu));
 
 	

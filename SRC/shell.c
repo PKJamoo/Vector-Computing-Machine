@@ -8,15 +8,13 @@ void run_file()
 {
 	processor->running = TRUE;
 	while(processor->running){
-		printf("Fetch\n");
 		fetch(processor);
-
 	}
 }
 
 void load_file (char* file_name)
 {
-	char* file_path = "C:\\Users\\Liam\\Desktop\\VCM\\Vector-Computing-Machine\\TESTBIN\\";
+	char* file_path = "C:\\Users\\Liam\\Desktop\\VCM\\Vector-Computing-Machine\\test\\";
 	char* full_path = malloc(strlen(file_path) + strlen(file_name) + 1);
 	strcpy(full_path, file_path);
 	strcat(full_path, file_name);
@@ -25,7 +23,7 @@ void load_file (char* file_name)
 	fseek(file, 0, SEEK_END);
 	file_size = ftell(file);
 	rewind(file);
-	fread(mainmem, sizeof(unsigned char), file_size, file);
+	fread(mainmem->RAM, sizeof(unsigned char), file_size, file);
 	free(full_path);
 }
 
