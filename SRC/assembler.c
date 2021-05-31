@@ -8,7 +8,7 @@ FILE* assembler_open_file(char* file_name)
 
 	FILE* file;
 	// create String filepath
-	char* file_path = "TESTASM/";
+	char* file_path = "C:\\Users\\Liam\\Desktop\\VCM\\Vector-Computing-Machine\\test\\";
 
 	
 	char* full_path = malloc(strlen(file_path) + strlen(file_name) + 1);
@@ -629,9 +629,9 @@ void assembler(char* file_name)
 	print_ast(ast);
 
 	// optimize code
-	assembler_optimize(ast);
+	//assembler_optimize(ast);
 	// create binary file
-	assembler_create_bin(ast);
+	//assembler_create_bin(ast);
 
 	// close file after use
 	fclose(file);

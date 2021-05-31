@@ -84,13 +84,31 @@ int	    shell_execute_command(int argc, char** args)
 {
 		if (strcmp(args[0], "open") == 0){
 			if (argc != 2) {
-				printf("MUST INCLUDE FILENAME\n");
+				printf("sh: must include name of file to run\n");
 				return 0;
 			}
 			load_file(args[1]);
 			run_file();
 			return 0;
 
+		}
+
+		else if (strcmp(args[0], "asm") == 0) {
+			if (argc != 2) {
+				printf("sh: must include name of file to assemble\n");
+				return 0;
+			}
+			assembler(args[1]);
+		}
+
+		else if ((strcmp(args[0], "quit") == 0 )
+					 || (strcmp(args[0], "q") == 0 )) {
+
+			return -1;
+		}
+
+		else {
+		printf("sh: %s is not a valid command\n", args[0]);
 		}
 		return 0;
 }
